@@ -25,18 +25,19 @@ class Parameter(Symbol):
     """
     # pylint: disable=too-many-ancestors
 
-    def __init__(self, name, desc=None, default=None):
+    def __new__(cls, name, desc=None, default=None):
         if name in Variable.ILLEGAL_NAMES:
             raise InvalidNameError(name, 'Name already used by sympy')
 
-        super(Parameter, self).__init__(name)
-        self.name = name
-        self.desc = desc
-        self.default = default
-        self.model = None
+        obj = Symbol.__new__(cls,name)
+        obj.name = name
+        obj.desc = desc
+        obj.default = default
+        obj.model = None
 
-        self._index = None
-        self._value = default
+        obj._index = None
+        obj._value = default
+        return obj
 
     @property
     def value(self):
@@ -60,12 +61,13 @@ class SeriesParameter(Parameter):
     """
     # pylint: disable=too-many-ancestors
 
-    def __init__(self, name, variable=None, iteration=None, default=None):
-        super(SeriesParameter, self).__init__(name, default=default)
+    def __new__(cls, name, variable=None, iteration=None, default=None):
+        obj = Parameter.__new__(cls, name, default=default)
         if variable is None or iteration is None:
             raise ValueError('variable and iteration cannot be none')
-        self.variable = variable
-        self.iteration = iteration
+        obj.variable = variable
+        obj.iteration = iteration
+        return obj
 
     @property
     def value(self):

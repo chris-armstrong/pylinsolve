@@ -32,17 +32,18 @@ class Variable(Symbol):
 
     ILLEGAL_NAMES = ['I', 'oo', 'nan', 'pi', 'E']
 
-    def __init__(self, name, desc=None, default=None):
+    def __new__(cls, name, desc=None, default=None):
         if name in Variable.ILLEGAL_NAMES:
             raise InvalidNameError(name, 'Name already used by sympy')
 
-        super(Variable, self).__init__(name)
+        obj = Symbol.__new__(cls,name)
 
-        self.name = name
-        self.desc = desc
-        self.default = default
-        self.model = None
-        self.equation = None
-        self.value = default
+        obj.name = name
+        obj.desc = desc
+        obj.default = default
+        obj.model = None
+        obj.equation = None
+        obj.value = default
 
-        self._index = None
+        obj._index = None
+        return obj
